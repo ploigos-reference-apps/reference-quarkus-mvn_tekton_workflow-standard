@@ -1,0 +1,161 @@
+---
+tssc-config:
+  config-decryptors:
+  - implementer: SOPS
+
+  global-defaults:
+    service-name: fruit
+    application-name: reference-quarkus-mvn-jenkins
+    organization: tssc-team
+    argocd-api: argocd-server-argocd.apps.tssc.rht-set.com
+    maven-servers:
+      internal-mirror:
+        id: internal-server
+        username: tssc
+    maven-mirrors:
+      internal-mirror:
+        id: internal-mirror
+        url: http://artifactory.apps.tssc.rht-set.com/artifactory/release/
+        mirror-of: '*'
+    container-registries:
+        registry.redhat.io:
+            username: 6340056|tssc-integration-infra
+        quay-quay-enterprise.apps.tssc.rht-set.com:
+            username: tssc-team+tssc_reference_app_quarkus_rest_json
+
+  global-environment-defaults:
+    DEV:
+      kube-app-domain: dev.apps.tssc.rht-set.com
+    TEST:
+      kube-app-domain: test.apps.tssc.rht-set.com
+    PROD:
+      kube-app-domain: apps.tssc.rht-set.com
+
+  generate-metadata:
+  - implementer: Maven
+  - implementer: Git
+  - implementer: SemanticVersion
+
+  tag-source:
+  - implementer: Git
+    config:
+      username: sa-tssc-reference-apps
+
+  unit-test:
+  - implementer: Maven
+    config: {
+    }
+
+  package:
+  - implementer: Maven
+    config: {
+    }
+
+  static-code-analysis:
+  - implementer: SonarQube
+    config:
+      url: https://sonarqube-sonarqube.apps.tssc.rht-set.com/
+      user: reference-apps-sa
+
+  push-artifacts:
+  - implementer: Maven
+    config:
+      maven-push-artifact-repo-id: internal-server
+      maven-push-artifact-repo-url: http://artifactory.apps.tssc.rht-set.com/artifactory/tssc/
+
+  create-container-image:
+  - implementer: Buildah
+    config:
+      destination: localhost/tssc-reference-app-quarkus-rest-json
+
+  push-container-image:
+  - implementer: Skopeo
+    config:
+      destination-url: quay-quay-enterprise.apps.tssc.rht-set.com
+
+  sign-container-image:
+  - implementer: PodmanSign
+    config: {}
+  - implementer: CurlPush
+    config:
+      container-image-signature-server-url: http://artifactory.apps.tssc.rht-set.com/artifactory/container-image-signatures
+      container-image-signature-server-username: tssc
+
+  container-image-static-compliance-scan:
+  # sample scans using DataStream file (preferred)
+  - name: OpenSCAP - Compliance - Example Compliance Profile for UBI8 Container Images [Based on xccdf_org.ssgproject.content_profile_standard]
+    implementer: OpenSCAP
+    config:
+      oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+      oscap-tailoring-uri: https://raw.githubusercontent.com/rhtconsulting/tssc-example-oscap-content/main/xccdf_com.redhat.tssc_profile_example_ubi8-tailoring-xccdf.xml
+      oscap-profile: xccdf_com.redhat.tssc_profile_example_ubi8
+
+  #- name: OpenSCAP - Compliance - Standard System Security Profile for Red Hat Enterprise Linux 8
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+  #    oscap-profile: xccdf_org.ssgproject.content_profile_standard
+
+  #- name: OpenSCAP - Compliance - Protection Profile for General Purpose Operating Systems
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+  #    oscap-profile: xccdf_org.ssgproject.content_profile_ospp
+
+  #- name: OpenSCAP - Compliance - DISA STIG for Red hat Enterprise Linux 8
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+  #    oscap-profile: xccdf_org.ssgproject.content_profile_stig
+
+  # sample scans using XCCDF file (okay if you don't have access to DataStream)
+  #- name: OpenSCAP - Compliance - DISA STIG for Red hat Enterprise Linux 8
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-xccdf.xml
+  #    oscap-profile: stig
+
+  #- name: OpenSCAP - Compliance - Protection Profile for General Purpose Operating Systems
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-xccdf.xml
+  #    oscap-profile: ospp
+
+  container-image-static-vulnerability-scan:
+  # sample vulnerability scan using XCCDF file (preferred)
+  - name: OpenSCAP - Vulnerability - DataStream
+    implementer: OpenSCAP
+    config:
+      oscap-input-definitions-uri: https://www.redhat.com/security/data/metrics/ds/v2/RHEL8/rhel-8.ds.xml.bz2
+
+  # sample scans using OVAL file (if you must, but XCCDF is muuuuch better if availabe)
+  #- name: OpenSCAP - Vulnerability - OVAL
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://www.redhat.com/security/data/oval/v2/RHEL8/rhel-8.oval.xml.bz2
+  # sample scan using DataStream file
+
+  deploy:
+  - implementer: ArgoCD
+    config:
+      git-email: 'napsspo+tssc@redhat.com'
+      helm-config-repo: http://gitea.gitea.svc.cluster.local:3000/tssc-references/reference-quarkus-mvn-jenkins-config.git
+      num-replicas: 1
+      route-enabled: true
+      readiness-probe-path: /fruits
+      liveness-probe-path: /fruits
+      destination-url: docker://quay-quay-enterprise.apps.tssc.rht-set.com
+      argocd-username: admin
+      git-username: sa-tssc-reference-apps
+
+  validate-environment-configuration:
+  - implementer: ConfiglintFromArgocd
+  - implementer: Configlint
+    config:
+      rules: cicd/ValidateEnv/
+
+  uat:
+  - implementer: Maven
+    config: {
+      selenium-hub-url: http://67.207.93.102:4444
+    }
