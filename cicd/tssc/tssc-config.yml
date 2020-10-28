@@ -38,8 +38,8 @@ tssc-config:
 
   tag-source:
   - implementer: Git
-    config:
-      username: sa-tssc-reference-apps
+    config: {
+    }
 
   unit-test:
   - implementer: Maven
