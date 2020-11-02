@@ -67,6 +67,7 @@ tssc-config:
   - implementer: Buildah
     config:
       destination: localhost/tssc-reference-app-quarkus-rest-json
+      tlsverify: 'false'
 
   push-container-image:
   - implementer: Skopeo
