@@ -22,6 +22,7 @@ tssc-config:
             username: 6340056|tssc-integration-infra
         quay-quay-enterprise.apps.tssc.rht-set.com:
             username: tssc-team+tssc_reference_app_quarkus_rest_json
+            tls-verify: 'false'
 
   global-environment-defaults:
     DEV:
@@ -67,11 +68,14 @@ tssc-config:
   - implementer: Buildah
     config:
       destination: localhost/tssc-reference-app-quarkus-rest-json
+      tls-verify: 'false'
 
   push-container-image:
   - implementer: Skopeo
     config:
       destination-url: quay-quay-enterprise.apps.tssc.rht-set.com
+      dest-tls-verify: 'false'
+      src-tls-verify: 'false'
 
   sign-container-image:
   - implementer: PodmanSign
