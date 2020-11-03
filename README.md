@@ -1,25 +1,10 @@
-Source: https://github.com/quarkusio/quarkus-quickstarts/tree/master/rest-json-quickstart
+# reference-quarkus-mvn-tekton
 
-## CI Tool Configuration
+A reference application that is built and unit tested with Maven
+that can be run through the [Ploigos](https://github.com/ploigos) Workflow using
+[Tekton](https://github.com/tektoncd/) for the pipeline service.
 
-TODO
+## Source
 
-## Tests
-
-### Unit Tests
-Run the unit tests:
-```
-mvn test
-```
-
-### UAT Tests
-Run the user acceptance tests:
-```
-mvn -Pintegration-test test -Dselenium.hub.url=SELENIUM_HUB_URL -Dtarget.base.url=TARGET_BASE_URL
-```
-
-SELENIUM_HUB_URL is the URL where the Selenium Hub is available and listening.
-
-TARGET_BASE_URL is the URL of this running application.
-
-TEST TEST TEST TEST
+This is a copy/paste/fork of [rest-json-quickstart](https://github.com/quarkusio/quarkus-quickstarts/tree/master/rest-json-quickstart)
+maintained specifically do integration testing for [Ploigos](https://github.com/ploigos).
