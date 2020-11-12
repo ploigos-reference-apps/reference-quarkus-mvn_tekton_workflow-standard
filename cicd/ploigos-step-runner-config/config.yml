@@ -5,7 +5,7 @@ tssc-config:
 
   global-defaults:
     organization: ploigos-ref
-    application-name: ref-quarkus-mvn-tekton
+    application-name: ref-quarkus-mvn-tekton-std
     service-name: fruit
 
     argocd-api: argocd-server-argocd.apps.tssc.rht-set.com
@@ -22,7 +22,7 @@ tssc-config:
         registry.redhat.io:
             username: 6340056|tssc-integration-infra
         quay-quay-enterprise.apps.tssc.rht-set.com:
-            username: ploigos-ref+workflow_ref_quarkus_mvn_tekton_fruit
+            username: ploigos-ref+workflow_reference_quarkus_mvn_tekton_workflow_standard
 
   global-environment-defaults:
     DEV:
@@ -110,7 +110,6 @@ tssc-config:
       liveness-probe-path: /fruits
       destination-url: docker://quay-quay-enterprise.apps.tssc.rht-set.com
       argocd-username: admin
-      git-username: sa-tssc-reference-apps
 
   validate-environment-configuration:
   - implementer: ConfiglintFromArgocd
