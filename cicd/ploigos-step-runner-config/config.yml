@@ -102,7 +102,7 @@ tssc-config:
   - implementer: ArgoCD
     config:
       git-email: 'napsspo+tssc@redhat.com'
-      helm-config-repo: http://gitea.tssc.rht-set.com/tssc-references/reference-quarkus-mvn-tekton-cloud-resources.git
+      helm-config-repo: http://gitea.tssc.rht-set.com/ploigos-reference-applications/reference-quarkus-mvn-cloud-resources_tekton_workflow-standard.git
       argocd-helm-chart-path: charts/reference-quarkus-mvn-deploy
       num-replicas: 1
       route-enabled: true
@@ -110,6 +110,7 @@ tssc-config:
       liveness-probe-path: /fruits
       destination-url: docker://quay-quay-enterprise.apps.tssc.rht-set.com
       argocd-username: admin
+      git-username: sa-ploigos-ref-apps
 
   validate-environment-configuration:
   - implementer: ConfiglintFromArgocd
