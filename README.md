@@ -9,3 +9,4 @@ that can be run through the [Ploigos](https://github.com/ploigos) Workflow using
 This is a copy/paste/fork of [rest-json-quickstart](https://github.com/quarkusio/quarkus-quickstarts/tree/master/rest-json-quickstart)
 maintained specifically do integration testing for [Ploigos](https://github.com/ploigos).
 
+TEST 1
