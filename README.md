@@ -1,1 +1,1 @@
-ploigos-reference-apps/reference-quarkus-mvn_tekton_workflow-minimal
+replaced by / merged with https://github.com/ploigos-reference-apps/reference-quarkus-mvn
